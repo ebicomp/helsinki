@@ -16,6 +16,20 @@ const App = () => {
     setBad(bad + 1);
   };
 
+  const CalcTotal = () => {
+    return good + neutral + bad;
+  };
+  const calcAvg = () => {
+    const total = CalcTotal();
+    if (total === 0) return 0;
+    else return (good + -1 * bad) / total;
+  };
+  const calcPositive = () => {
+    const total = CalcTotal();
+    if (total === 0) return 0;
+    else return (good / total) * 100;
+  };
+
   return (
     <div>
       <h1>give feedback</h1>
@@ -29,6 +43,9 @@ const App = () => {
         <li>good {good}</li>
         <li>neutral {neutral}</li>
         <li>bad {bad}</li>
+        <li>all {CalcTotal()}</li>
+        <li>average {calcAvg()}</li>
+        <li>positive {calcPositive()}%</li>
       </ul>
     </div>
   );
