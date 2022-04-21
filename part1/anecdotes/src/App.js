@@ -13,15 +13,12 @@ const App = () => {
   //const votes = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
 
   const [selected, setSelected] = useState(0);
-  const [votes, setVotes] = useState({
-    0: 0,
-    1: 0,
-    2: 0,
-    3: 0,
-    4: 0,
-    5: 0,
-    6: 0,
-  });
+  const [votes, setVotes] = useState([0, 0, 0, 0, 0, 0, 0]);
+  //const [maxVoteIndex, setMaxVoteIndex] = useState(0);
+
+  let maxVoteIndex = 0;
+
+  console.log("app", votes);
 
   const getRandomInt = (max) => {
     return Math.floor(Math.random() * max);
@@ -32,13 +29,25 @@ const App = () => {
     setSelected(randomNumber);
   };
   const voteHandler = () => {
-    const newVotes = {
-      ...votes,
-    };
+    const newVotes = [...votes];
     newVotes[selected] += 1;
     setVotes(newVotes);
+    console.log("handler", votes);
   };
 
+  const setMaxVote = () => {
+    let maxvote = 0;
+    let maxIndex = 0;
+    votes.forEach((vote, index) => {
+      if (vote > maxvote) {
+        maxvote = vote;
+        maxIndex = index;
+      }
+    });
+    maxVoteIndex = maxIndex;
+    //setMaxVoteIndex(maxIndex);
+  };
+  setMaxVote();
   return (
     <div>
       <h1>Anecode of the day </h1>
@@ -48,6 +57,8 @@ const App = () => {
       <button onClick={voteHandler}>vote</button>
       <button onClick={nextAnecdoteHandler}>next anecdote</button>
       <h1>Anecdoe with most votes</h1>
+      <div>{anecdotes[maxVoteIndex]}</div>
+      <div>has {votes[maxVoteIndex]} votes</div>
     </div>
   );
 };
