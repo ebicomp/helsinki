@@ -15,9 +15,6 @@ const App = () => {
   const [votes, setVotes] = useState([0, 0, 0, 0, 0, 0, 0]);
 
   let maxVoteIndex = 0;
-
-  console.log("app", votes);
-
   const getRandomInt = (max) => {
     return Math.floor(Math.random() * max);
   };
