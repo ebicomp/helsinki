@@ -1,5 +1,7 @@
 import {useState, useEffect} from 'react'
 import axios from 'axios';
+import CountryDetail from './components/country-detail';
+import CountryList from './components/country-list';
 function App() {
 
   const [searchTerm, setSearchTerm]=useState('');
@@ -11,6 +13,11 @@ function App() {
     area:'',
     languages:[]
   });
+  const [showDetail, setShowDetail] = useState(false);
+
+const getCountryDetail = (countryName)=>{
+
+}
 
   useEffect(()=>{
     if(filterdCountriesName.length ===1){
@@ -32,6 +39,10 @@ function App() {
           flag:fetchedCountry.flags.png
         });
       });
+      setShowDetail(true);
+    }
+    else{
+      setShowDetail(false);
     }
   } , [filterdCountriesName]);
 
@@ -63,25 +74,12 @@ function App() {
         setCountriesName(countries);
      })
   } , []);
-
-
-
   return (
     <div>
       <div>find countries
         <input type="text" value={searchTerm} onChange={searchTermChangeHandler }/>
-        {filterdCountriesName.length >= 10 && <p>Too many maches, specify another filter</p> }
-        {filterdCountriesName.length < 10 && filterdCountriesName.length !== 1 && filterdCountriesName.map(c => {return <p key={c}>{c}</p>})}
-        {filterdCountriesName.length === 1 && 
-        <div>
-          <h2>{countryDetail.name}</h2>
-          <p>capital {countryDetail.capitals[0]}</p>
-          <p>area {countryDetail.area}</p>
-          <h3>languages</h3>
-          <p>{countryDetail.languages.map(la => <p>{la}</p>)}</p>
-          <img src={countryDetail.flag} alt={countryDetail.name}/>
-        </div>
-        }
+        <CountryList countries={filterdCountriesName} />
+        {showDetail && <CountryDetail countryDetail={countryDetail} />}
       </div>
     </div>
   );
