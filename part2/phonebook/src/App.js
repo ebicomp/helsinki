@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import Filter from "./components/Filter";
 import Person from "./components/Person";
 import PersonForm from "./components/PersonForm";
-import Persons from "./components/Persons";
 import personsService from './services/persons'
 
 const App = () => {
@@ -37,23 +36,44 @@ const App = () => {
     event.preventDefault();
 
     if (persons.filter((p) => p.name === newName).length > 0) {
-      alert(`${newName} is already added to phonebook`);
-      return;
+      if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
+        const currentPerson = persons.find(p => p.name === newName);
+          UpdatePersonNumber(currentPerson);
+          return;
+      }
     }
+    else 
+      AddNewPerson();
+  };
+
+  const AddNewPerson = () =>{
+
     const newPersonObj = {
       name: newName,
       number: newNumber,
       id:persons.length + 1
     };
-    
-
     personsService.create(newPersonObj)
     .then(returnedPerson => {
       setPersons(persons.concat(newPersonObj));
       setNewName('');
       setNewNumber('');
     });
-  };
+  }
+
+  const UpdatePersonNumber = (currentPerson)=>{
+   const newPeronObj = {
+     ...currentPerson,
+     number:newNumber
+   }
+    personsService
+    .update(newPeronObj)
+    .then(updatedPerson => {
+      setPersons(persons.map(person=> person.id !== newPeronObj.id? person: updatedPerson ));
+    })
+  }
+
+
   const newNameChangeHandler = (event) => {
     setNewName(event.target.value);
   };
