@@ -11,5 +11,9 @@ const create = (newObject)=>{
     const request = axios.post(baseUrl,newObject);
     return request.then(Response=>Response.data);
 }
+const remove = id =>{
+    const request = axios.delete(`${baseUrl}/${id}`);
+    return request.then(Response => Response);
+}
 
-export default {getAll , create};
+export default {getAll , create , remove};

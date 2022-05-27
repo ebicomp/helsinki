@@ -1,10 +1,8 @@
+import Person from './Person';
 const Persons = (props) => {
-  {
-    return props.persons.map((person) => (
-      <p key={person.name}>
-        {person.name} {person.number}
-      </p>
+  const {persons , setPersons} = props;  
+    return persons.map((person) => (
+       <Person key={person.id} person={person} setPersons={setPersons}/>
     ));
-  }
 };
 export default Persons;

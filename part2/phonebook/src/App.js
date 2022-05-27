@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import axios from 'axios'
 import Filter from "./components/Filter";
+import Person from "./components/Person";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
 import personsService from './services/persons'
@@ -18,6 +18,19 @@ const App = () => {
     .getAll()
     .then(initialPersons => setPersons(initialPersons));
   } , []);
+
+  const RemovePerson = id =>{
+    const personToDelete = persons.find(p=>p.id === id);
+    console.log(personToDelete.name);
+    if (!window.confirm(`Delete ${personToDelete.name}`)) {
+      return;
+    }
+    personsService
+    .remove(id)
+    .then(Response => {
+      setPersons(persons.filter(person => person.id !== id))
+    })
+  }
 
 
   const addPerson = (event) => {
@@ -67,7 +80,7 @@ const App = () => {
         newNumber={newNumber}
       />
       <h2>Numbers</h2>
-      <Persons persons={filteredData} />
+      { filteredData.map(person=> < Person key={person.id} person ={person} RemovePerson={() => RemovePerson(person.id)} />)}
     </div>
   );
 };
