@@ -2,6 +2,7 @@ import {useState, useEffect} from 'react'
 import axios from 'axios';
 import CountryDetail from './components/country-detail';
 import CountryList from './components/country-list';
+import CountryWeather from './components/country-weather';
 function App() {
 
   const [searchTerm, setSearchTerm]=useState('');
@@ -14,6 +15,11 @@ function App() {
     languages:[]
   });
   const [showDetail, setShowDetail] = useState(false);
+  const [countryWeather, setCountryWeather] = useState({
+    temp:'',
+    icon:'',
+    wind:''
+  });
 
   useEffect(()=>{
     if(filterdCountriesName.length ===1){
@@ -40,7 +46,6 @@ function App() {
     axios.get(`https://restcountries.com/v3.1/name/${countryName }`)
     .then(response=>{
       const fetchedCountry = response.data[0];
-      console.log(fetchedCountry);
       for (const [key, value] of Object.entries(fetchedCountry.languages)) {
         languagesofCountry.push(value);
       }
@@ -51,6 +56,22 @@ function App() {
         area:fetchedCountry.area,
         languages:languagesofCountry,
         flag:fetchedCountry.flags.png
+      });
+
+      getWeatherInformation(fetchedCountry.capital);
+    });
+
+  }
+
+  const getWeatherInformation =(city)=>{
+    axios
+    .get(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=f3f4a8880c609886c5562e9404671813&units=metric`)
+    .then(response => {
+      console.log(response.data.wind.speed);
+      setCountryWeather({
+        temp:response.data.main.temp,
+        icon:response.data.weather[0].icon,
+        wind:response.data.wind.speed
       });
     });
   }
@@ -84,7 +105,12 @@ function App() {
       <div>find countries
         <input type="text" value={searchTerm} onChange={searchTermChangeHandler }/>
         <CountryList countries={filterdCountriesName} showContryDetail={showContryDetail} />
-        {showDetail && <CountryDetail countryDetail={countryDetail} />}
+        {showDetail &&
+        <div>
+         <CountryDetail countryDetail={countryDetail} />
+         <CountryWeather weatherDetail={countryWeather} />
+         </div>
+         }
       </div>
     </div>
   );
