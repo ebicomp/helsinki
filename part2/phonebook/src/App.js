@@ -3,6 +3,7 @@ import Filter from "./components/Filter";
 import Person from "./components/Person";
 import PersonForm from "./components/PersonForm";
 import personsService from './services/persons'
+import Notification from "./components/Notification";
 
 const App = () => {
 
@@ -10,6 +11,7 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [filter, setFilter] = useState("");
+  const [message, setMessage] = useState(null);
 
 
   useEffect(()=>{
@@ -28,6 +30,12 @@ const App = () => {
     .remove(id)
     .then(Response => {
       setPersons(persons.filter(person => person.id !== id))
+      setMessage('the number was successfully deleted');
+      setTimeout(() => {setMessage(null)}, 5000);
+    })
+    .catch(error=>{
+      setMessage('information  was already removed from server');
+      setTimeout(() => {setMessage(null)}, 5000);
     })
   }
 
@@ -58,6 +66,8 @@ const App = () => {
       setPersons(persons.concat(newPersonObj));
       setNewName('');
       setNewNumber('');
+      setMessage('person was successfully added');
+      setTimeout(() => {setMessage(null)}, 5000);
     });
   }
 
@@ -70,6 +80,8 @@ const App = () => {
     .update(newPeronObj)
     .then(updatedPerson => {
       setPersons(persons.map(person=> person.id !== newPeronObj.id? person: updatedPerson ));
+      setMessage('the number was successfully updated');
+      setTimeout(() => {setMessage(null)}, 5000);
     })
   }
 
@@ -90,6 +102,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message} />
       <Filter filterChangeHandler={filterChangeHandler} filter={filter} />
       <h3>Add a new </h3>
       <PersonForm
