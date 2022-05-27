@@ -15,30 +15,10 @@ function App() {
   });
   const [showDetail, setShowDetail] = useState(false);
 
-const getCountryDetail = (countryName)=>{
-
-}
-
   useEffect(()=>{
     if(filterdCountriesName.length ===1){
       const countryName = filterdCountriesName[0];
-      let languagesofCountry = [];
-      axios.get(`https://restcountries.com/v3.1/name/${countryName }`)
-      .then(response=>{
-        const fetchedCountry = response.data[0];
-        console.log(fetchedCountry);
-        for (const [key, value] of Object.entries(fetchedCountry.languages)) {
-          languagesofCountry.push(value);
-        }
-
-        setCountryDetail({
-          name:fetchedCountry.name.common,
-          capitals:fetchedCountry.capital,
-          area:fetchedCountry.area,
-          languages:languagesofCountry,
-          flag:fetchedCountry.flags.png
-        });
-      });
+      fillCountryDetail(countryName);
       setShowDetail(true);
     }
     else{
@@ -48,6 +28,31 @@ const getCountryDetail = (countryName)=>{
 
   const searchTermChangeHandler = event =>{
     setSearchTerm(event.target.value);
+  }
+
+  const showContryDetail = countryName =>{
+    fillCountryDetail(countryName);
+    setShowDetail(true);
+  }
+
+  const fillCountryDetail = (countryName)=>{
+    let languagesofCountry = [];
+    axios.get(`https://restcountries.com/v3.1/name/${countryName }`)
+    .then(response=>{
+      const fetchedCountry = response.data[0];
+      console.log(fetchedCountry);
+      for (const [key, value] of Object.entries(fetchedCountry.languages)) {
+        languagesofCountry.push(value);
+      }
+  
+      setCountryDetail({
+        name:fetchedCountry.name.common,
+        capitals:fetchedCountry.capital,
+        area:fetchedCountry.area,
+        languages:languagesofCountry,
+        flag:fetchedCountry.flags.png
+      });
+    });
   }
 
   useEffect(() =>{
@@ -78,7 +83,7 @@ const getCountryDetail = (countryName)=>{
     <div>
       <div>find countries
         <input type="text" value={searchTerm} onChange={searchTermChangeHandler }/>
-        <CountryList countries={filterdCountriesName} />
+        <CountryList countries={filterdCountriesName} showContryDetail={showContryDetail} />
         {showDetail && <CountryDetail countryDetail={countryDetail} />}
       </div>
     </div>
